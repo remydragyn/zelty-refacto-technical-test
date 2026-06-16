@@ -1,18 +1,36 @@
-import { Affix, Button, Card, Flex, Grid, Input, Select, Space, Statistic, Table, Tabs, Tag, Typography, message } from 'antd';
+import {
+  Affix,
+  Button,
+  Card,
+  Flex,
+  Grid,
+  Input,
+  Select,
+  Space,
+  Statistic,
+  Table,
+  Tabs,
+  Tag,
+  Typography,
+  message,
+} from 'antd';
 import type { TableColumnsType } from 'antd';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Category, Product } from '../types';
-
-const API_URL = 'http://localhost:3001';
+import { Product } from '../types';
+import { API_ROUTES } from '../helpers/api';
+import { formatPrice } from '../helpers/format';
+import { useCategories } from '../hooks/useCategories';
 
 const { useBreakpoint } = Grid;
 
 export default function ProductsPage() {
   const screens = useBreakpoint();
   const isMobile = !screens.sm;
+
+  const { getCategorieName, getCategorieColor, categories } = useCategories();
+
   const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [q, setSearchTerm] = useState('');
@@ -26,7 +44,7 @@ export default function ProductsPage() {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`${API_URL}/products`)
+    fetch(API_ROUTES.products.list())
       .then((res) => res.json())
       .then((data: Product[]) => {
         setProducts(data);
@@ -38,14 +56,8 @@ export default function ProductsPage() {
       });
   }, []);
 
-  useEffect(() => {
-    fetch(`${API_URL}/categories`)
-      .then((res) => res.json())
-      .then((data: Category[]) => setCategories(data));
-  }, []);
-
   const handleToggleActive = async (product: Product) => {
-    const res = await fetch(`${API_URL}/products/${product.id}`, {
+    const res = await fetch(API_ROUTES.products.update(product.id), {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ isActive: !product.isActive }),
@@ -62,12 +74,16 @@ export default function ProductsPage() {
 
   const handleSavePrice = async () => {
     const price = parseFloat(editPrice);
+    if (editingId === null) {
+      alert('Aucun produit sélectionné pour la modification du prix.');
+      return;
+    }
     if (isNaN(price) || price < 0) {
       alert('Le prix doit être un nombre positif.');
       return;
     }
     setSaving(true);
-    const res = await fetch(`${API_URL}/products/${editingId}`, {
+    const res = await fetch(API_ROUTES.products.update(editingId), {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ price }),
@@ -85,7 +101,7 @@ export default function ProductsPage() {
     for (const id of selectedKeys) {
       const product = products.find((p) => p.id === id);
       if (!product || product.isActive === activate) continue;
-      const res = await fetch(`${API_URL}/products/${id}`, {
+      const res = await fetch(API_ROUTES.products.update(id), {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ isActive: activate }),
@@ -98,17 +114,14 @@ export default function ProductsPage() {
     message.success(`${count} produit(s) ${activate ? 'activé(s)' : 'désactivé(s)'}`);
   };
 
-  const fmtPrice = (price: number) =>
-    new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(price);
-
   const handleExport = () => {
     const rows = [
       ['Nom', 'Catégorie', 'Description', 'Prix', 'Statut'],
       ...items.map((p) => [
         p.name,
-        getCatName(p.categoryId),
+        getCategorieName(p.categoryId),
         p.description,
-        fmtPrice(p.price),
+        formatPrice(p.price),
         p.isActive ? 'Actif' : 'Inactif',
       ]),
     ];
@@ -121,14 +134,6 @@ export default function ProductsPage() {
     a.click();
     URL.revokeObjectURL(url);
   };
-
-  const CAT_COLORS = ['blue', 'purple', 'cyan', 'orange', 'geekblue', 'volcano', 'magenta', 'gold'];
-
-  const getCatName = (categoryId: number) =>
-    categories.find((c) => c.id === categoryId)?.name ?? '—';
-
-  const getCatColor = (categoryId: number) =>
-    CAT_COLORS[categoryId % CAT_COLORS.length];
 
   const items = products
     .filter((p) => (tab === 'active' ? p.isActive : !p.isActive))
@@ -148,15 +153,13 @@ export default function ProductsPage() {
     {
       title: 'Nom',
       dataIndex: 'name',
-      render: (name: string, record: Product) => (
-        <Link to={`/products/${record.id}`}>{name}</Link>
-      ),
+      render: (name: string, record: Product) => <Link to={`/products/${record.id}`}>{name}</Link>,
     },
     {
       title: 'Catégorie',
       dataIndex: 'categoryId',
       render: (categoryId: number) => (
-        <Tag color={getCatColor(categoryId)}>{getCatName(categoryId)}</Tag>
+        <Tag color={getCategorieColor(categoryId)}>{getCategorieName(categoryId)}</Tag>
       ),
     },
     {
@@ -176,7 +179,12 @@ export default function ProductsPage() {
               min="0"
               value={editPrice}
               onChange={(e) => setEditPrice(e.target.value)}
-              style={{ width: 80, padding: '2px 6px', border: '1px solid #d9d9d9', borderRadius: 6 }}
+              style={{
+                width: 80,
+                padding: '2px 6px',
+                border: '1px solid #d9d9d9',
+                borderRadius: 6,
+              }}
               autoFocus
             />
             <Button size="small" type="primary" onClick={handleSavePrice} loading={saving}>
@@ -188,11 +196,15 @@ export default function ProductsPage() {
           </Space>
         ) : (
           <span
-            style={{ cursor: 'pointer', color: price > 10 ? '#059669' : undefined, fontWeight: 500 }}
+            style={{
+              cursor: 'pointer',
+              color: price > 10 ? '#059669' : undefined,
+              fontWeight: 500,
+            }}
             onClick={() => handleEditPrice(record)}
             title="Cliquer pour modifier"
           >
-            {fmtPrice(price)}
+            {formatPrice(price)}
           </span>
         ),
     },
@@ -208,11 +220,18 @@ export default function ProductsPage() {
     },
   ];
 
-  if (error) return <div style={{ padding: 48, textAlign: 'center', color: '#dc2626' }}>{error}</div>;
+  if (error)
+    return <div style={{ padding: 48, textAlign: 'center', color: '#dc2626' }}>{error}</div>;
 
   return (
     <div>
-      <Flex justify="space-between" align="center" wrap="wrap" gap={12} style={{ marginBottom: 16 }}>
+      <Flex
+        justify="space-between"
+        align="center"
+        wrap="wrap"
+        gap={12}
+        style={{ marginBottom: 16 }}
+      >
         <Typography.Title level={2} style={{ margin: 0 }}>
           Catalogue produits
         </Typography.Title>
@@ -243,7 +262,7 @@ export default function ProductsPage() {
         </Flex>
         <Flex gap={24} wrap="wrap" align="center" style={isMobile ? { marginTop: 16 } : undefined}>
           <Statistic title="Actifs" value={active} />
-          <Statistic title="Prix moyen" value={fmtPrice(avg)} />
+          <Statistic title="Prix moyen" value={formatPrice(avg)} />
           <Statistic title="Au-dessus de 10 €" value={expensive} />
         </Flex>
       </Flex>
@@ -274,12 +293,28 @@ export default function ProductsPage() {
       />
       {selectedKeys.length > 0 && (
         <Affix offsetBottom={24} style={{ textAlign: 'center' }}>
-          <Card size="small" style={{ display: 'inline-block', boxShadow: '0 4px 20px rgba(0,0,0,0.12)' }}>
+          <Card
+            size="small"
+            style={{ display: 'inline-block', boxShadow: '0 4px 20px rgba(0,0,0,0.12)' }}
+          >
             <Space>
-              <Typography.Text type="secondary">{selectedKeys.length} sélectionné(s)</Typography.Text>
-              <Button size="small" type="primary" loading={bulkLoading} onClick={() => handleBulk(true)}>Activer</Button>
-              <Button size="small" danger loading={bulkLoading} onClick={() => handleBulk(false)}>Désactiver</Button>
-              <Button size="small" onClick={() => setSelectedKeys([])}>✕</Button>
+              <Typography.Text type="secondary">
+                {selectedKeys.length} sélectionné(s)
+              </Typography.Text>
+              <Button
+                size="small"
+                type="primary"
+                loading={bulkLoading}
+                onClick={() => handleBulk(true)}
+              >
+                Activer
+              </Button>
+              <Button size="small" danger loading={bulkLoading} onClick={() => handleBulk(false)}>
+                Désactiver
+              </Button>
+              <Button size="small" onClick={() => setSelectedKeys([])}>
+                ✕
+              </Button>
             </Space>
           </Card>
         </Affix>

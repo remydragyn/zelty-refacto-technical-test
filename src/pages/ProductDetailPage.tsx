@@ -1,10 +1,23 @@
-import { Button, Col, Descriptions, Flex, Form, Input, InputNumber, Row, Space, Spin, Tag, Typography } from 'antd';
+import {
+  Button,
+  Col,
+  Descriptions,
+  Flex,
+  Form,
+  Input,
+  InputNumber,
+  Row,
+  Space,
+  Spin,
+  Tag,
+  Typography,
+} from 'antd';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Category, Product } from '../types';
-
-const API_URL = 'http://localhost:3001';
-
+import { Product } from '../types';
+import { useCategories } from '../hooks/useCategories';
+import { API_ROUTES } from '../helpers/api';
+import { formatPrice } from '../helpers/format';
 interface EditFormValues {
   name: string;
   description: string;
@@ -15,8 +28,9 @@ export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
+  const { getCategorieName } = useCategories();
+
   const [product, setProduct] = useState<Product | null>(null);
-  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [edit, setIsEditing] = useState(false);
@@ -24,7 +38,7 @@ export default function ProductDetailPage() {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`${API_URL}/products/${id}`)
+    fetch(API_ROUTES.products.detail(id!))
       .then((res) => {
         if (!res.ok) throw new Error('Produit introuvable.');
         return res.json();
@@ -39,16 +53,10 @@ export default function ProductDetailPage() {
       });
   }, [id]);
 
-  useEffect(() => {
-    fetch(`${API_URL}/categories`)
-      .then((res) => res.json())
-      .then((data: Category[]) => setCategories(data));
-  }, []);
-
   const handleSave = async (values: EditFormValues) => {
     if (!product) return;
     setSaving(true);
-    const res = await fetch(`${API_URL}/products/${product.id}`, {
+    const res = await fetch(API_ROUTES.products.update(product.id), {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(values),
@@ -61,7 +69,7 @@ export default function ProductDetailPage() {
 
   const handleToggleActive = async () => {
     if (!product) return;
-    const res = await fetch(`${API_URL}/products/${product.id}`, {
+    const res = await fetch(API_ROUTES.products.update(product.id), {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ isActive: !product.isActive }),
@@ -70,15 +78,13 @@ export default function ProductDetailPage() {
     setProduct(updated);
   };
 
-  const fmtPrice = (price: number) =>
-    new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(price);
-
-  const getCatName = (categoryId: number) =>
-    categories.find((c) => c.id === categoryId)?.name ?? '—';
-
   if (loading) return <Spin style={{ display: 'block', padding: 48, textAlign: 'center' }} />;
   if (error || !product)
-    return <div style={{ padding: 48, textAlign: 'center', color: '#dc2626' }}>{error ?? 'Produit introuvable.'}</div>;
+    return (
+      <div style={{ padding: 48, textAlign: 'center', color: '#dc2626' }}>
+        {error ?? 'Produit introuvable.'}
+      </div>
+    );
 
   return (
     <div>
@@ -97,13 +103,17 @@ export default function ProductDetailPage() {
           <Row style={{ marginBottom: 20 }}>
             <Col xs={24} md={18} lg={12}>
               <Descriptions bordered column={1}>
-            <Descriptions.Item label="Catégorie">{getCatName(product.categoryId)}</Descriptions.Item>
-            <Descriptions.Item label="Description">{product.description}</Descriptions.Item>
-            <Descriptions.Item label="Prix">
-              <span style={{ color: product.price > 10 ? '#059669' : undefined, fontWeight: 500 }}>
-                {fmtPrice(product.price)}
-              </span>
-            </Descriptions.Item>
+                <Descriptions.Item label="Catégorie">
+                  {getCategorieName(product.categoryId)}
+                </Descriptions.Item>
+                <Descriptions.Item label="Description">{product.description}</Descriptions.Item>
+                <Descriptions.Item label="Prix">
+                  <span
+                    style={{ color: product.price > 10 ? '#059669' : undefined, fontWeight: 500 }}
+                  >
+                    {formatPrice(product.price)}
+                  </span>
+                </Descriptions.Item>
               </Descriptions>
             </Col>
           </Row>
@@ -119,33 +129,41 @@ export default function ProductDetailPage() {
       ) : (
         <Row>
           <Col xs={24} md={18} lg={12}>
-        <Form
-          layout="vertical"
-          initialValues={{ name: product.name, description: product.description, price: product.price }}
-          onFinish={handleSave}
-        >
-          <Form.Item name="name" label="Nom" rules={[{ required: true, message: 'Le nom est requis.' }]}>
-            <Input />
-          </Form.Item>
-          <Form.Item name="description" label="Description">
-            <Input.TextArea rows={3} />
-          </Form.Item>
-          <Form.Item
-            name="price"
-            label="Prix"
-            rules={[{ required: true, type: 'number', min: 0, message: 'Prix invalide.' }]}
-          >
-            <InputNumber min={0} step={0.01} style={{ width: 140 }} />
-          </Form.Item>
-          <Form.Item>
-            <Space>
-              <Button type="primary" htmlType="submit" loading={busy}>
-                Enregistrer
-              </Button>
-              <Button onClick={() => setIsEditing(false)}>Annuler</Button>
-            </Space>
-          </Form.Item>
-        </Form>
+            <Form
+              layout="vertical"
+              initialValues={{
+                name: product.name,
+                description: product.description,
+                price: product.price,
+              }}
+              onFinish={handleSave}
+            >
+              <Form.Item
+                name="name"
+                label="Nom"
+                rules={[{ required: true, message: 'Le nom est requis.' }]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item name="description" label="Description">
+                <Input.TextArea rows={3} />
+              </Form.Item>
+              <Form.Item
+                name="price"
+                label="Prix"
+                rules={[{ required: true, type: 'number', min: 0, message: 'Prix invalide.' }]}
+              >
+                <InputNumber min={0} step={0.01} style={{ width: 140 }} />
+              </Form.Item>
+              <Form.Item>
+                <Space>
+                  <Button type="primary" htmlType="submit" loading={busy}>
+                    Enregistrer
+                  </Button>
+                  <Button onClick={() => setIsEditing(false)}>Annuler</Button>
+                </Space>
+              </Form.Item>
+            </Form>
           </Col>
         </Row>
       )}

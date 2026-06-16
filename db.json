@@ -3,7 +3,7 @@
     {
       "id": 1,
       "name": "Burger Classic",
-      "description": "Steak haché, salade, tomate, cornichons",
+      "description": "Steak haché, salade, tomate, cornichons api route file",
       "price": 12.6,
       "categoryId": 1,
       "isActive": true
