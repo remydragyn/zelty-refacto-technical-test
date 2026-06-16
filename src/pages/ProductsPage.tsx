@@ -86,6 +86,7 @@ export default function ProductsPage() {
     {
       title: 'Nom',
       dataIndex: 'name',
+      // mettre dans routes.ts pour centraliser les routes et eviter de hardcoder les urls
       render: (name: string, record: Product) => <Link to={`/products/${record.id}`}>{name}</Link>,
     },
     {
