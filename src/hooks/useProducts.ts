@@ -4,6 +4,7 @@ import { message } from 'antd';
 import { Product } from '@src/types';
 import { API_ROUTES } from '@src/helpers/api';
 
+// A extraire du hook et mettre dans un fichier de call dedié.
 const getProducts = async (): Promise<Product[]> => {
   const res = await fetch(API_ROUTES.products.list());
   if (!res.ok) throw new Error('Impossible de charger les produits.');
@@ -16,6 +17,7 @@ const updateProduct = async (id: number, body: Partial<Product>): Promise<Produc
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   });
+  // Gerer l'erreur avec la muation
   if (!res.ok) throw new Error('Impossible de mettre à jour le produit.');
   return res.json();
 };
@@ -39,6 +41,7 @@ export const useProducts = () => {
     queryFn: getProducts,
   });
 
+  // Pour l'instant dans le front mais changer avec des params de query pour laisser le call gerer
   const items = products
     .filter((p) => (productState === 'active' ? p.isActive : !p.isActive))
     .filter(
@@ -48,6 +51,8 @@ export const useProducts = () => {
     )
     .filter((p) => (selectedCategory ? p.categoryId === selectedCategory : true));
 
+  // Demander au back de me renvoyer les stats plutot que de les calculer ici.
+  // Ca fonctionne uniquement car on récupere tous les produits.
   const stats = {
     active: products.filter((p) => p.isActive).length,
     avgPrice:

@@ -63,7 +63,16 @@ export default function ProductsPage() {
   };
 
   const handleSavePrice = async () => {
-    useSavePriceMutation.mutate({ id: editingId!, price: parseFloat(editPrice) });
+    const price = parseFloat(editPrice);
+    if (editingId === null) {
+      alert('Aucun produit sélectionné pour la modification du prix.');
+      return;
+    }
+    if (isNaN(price) || price < 0) {
+      alert('Le prix doit être un nombre positif.');
+      return;
+    }
+    useSavePriceMutation.mutate({ id: editingId, price });
     setEditingId(null);
   };
 
