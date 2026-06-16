@@ -1,7 +1,7 @@
-import { API_ROUTES } from '../helpers/api';
-import { Category } from '../types';
 import { useQuery } from '@tanstack/react-query';
-import { CAT_COLORS } from '../helpers/constant';
+import { Category } from '@src/types';
+import { CAT_COLORS } from '@src/helpers/constant.ts';
+import { API_ROUTES } from '@src/helpers/api';
 
 interface UseCategoriesReturn {
   categories: Category[];

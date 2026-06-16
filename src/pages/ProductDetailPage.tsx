@@ -14,10 +14,10 @@ import {
 } from 'antd';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Product } from '../types';
-import { useCategories } from '../hooks/useCategories';
-import { API_ROUTES } from '../helpers/api';
-import { formatPrice } from '../helpers/format';
+import { Product } from '@src/types';
+import { useCategories } from '@src/hooks/useCategories';
+import { API_ROUTES } from '@src/helpers/api';
+import { formatPrice } from '@src/helpers/format';
 interface EditFormValues {
   name: string;
   description: string;

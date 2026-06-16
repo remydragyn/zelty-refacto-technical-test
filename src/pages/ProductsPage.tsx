@@ -17,10 +17,11 @@ import {
 import type { TableColumnsType } from 'antd';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Product } from '../types';
-import { API_ROUTES } from '../helpers/api';
-import { formatPrice } from '../helpers/format';
-import { useCategories } from '../hooks/useCategories';
+import { Product } from '@src/types';
+import { API_ROUTES } from '@src/helpers/api';
+import { formatPrice } from '@src/helpers/format';
+import { useCategories } from '@src/hooks/useCategories';
+import { exportProductsCsv } from '@src/helpers/export';
 
 const { useBreakpoint } = Grid;
 
@@ -115,24 +116,7 @@ export default function ProductsPage() {
   };
 
   const handleExport = () => {
-    const rows = [
-      ['Nom', 'Catégorie', 'Description', 'Prix', 'Statut'],
-      ...items.map((p) => [
-        p.name,
-        getCategorieName(p.categoryId),
-        p.description,
-        formatPrice(p.price),
-        p.isActive ? 'Actif' : 'Inactif',
-      ]),
-    ];
-    const csv = rows.map((r) => r.map((v) => `"${v}"`).join(',')).join('\n');
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'catalogue-produits.csv';
-    a.click();
-    URL.revokeObjectURL(url);
+    exportProductsCsv(items, getCategorieName);
   };
 
   const items = products
