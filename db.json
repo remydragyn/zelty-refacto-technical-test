@@ -4,7 +4,7 @@
       "id": 1,
       "name": "Burger Classic",
       "description": "Steak haché, salade, tomate, cornichons api route file",
-      "price": 12.6,
+      "price": 9,
       "categoryId": 1,
       "isActive": true
     },
@@ -22,7 +22,7 @@
       "description": "Galette de pois chiches, avocat, roquette",
       "price": 11.5,
       "categoryId": 1,
-      "isActive": true
+      "isActive": false
     },
     {
       "id": 4,
@@ -30,7 +30,7 @@
       "description": "Frites fraîches coupées à la main, sel de Guérande",
       "price": 4.5,
       "categoryId": 2,
-      "isActive": true
+      "isActive": false
     },
     {
       "id": 5,
@@ -38,7 +38,7 @@
       "description": "Rondelles d'oignon panées, sauce ranch",
       "price": 5,
       "categoryId": 2,
-      "isActive": true
+      "isActive": false
     },
     {
       "id": 6,
@@ -46,7 +46,7 @@
       "description": "Romaine, parmesan, croûtons, sauce Caesar maison",
       "price": 8.9,
       "categoryId": 2,
-      "isActive": false
+      "isActive": true
     },
     {
       "id": 7,

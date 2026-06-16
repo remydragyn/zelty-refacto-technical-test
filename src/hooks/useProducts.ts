@@ -24,9 +24,11 @@ export const useProducts = () => {
   const queryClient = useQueryClient();
 
   const [selectedKeys, setSelectedKeys] = useState<number[]>([]);
+
+  // Should be queries in API call + query params
   const [q, setSearchTerm] = useState('');
+  const [productState, setProductState] = useState<'active' | 'inactive'>('active');
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
-  const [tab, setTab] = useState<'active' | 'inactive'>('active');
 
   const {
     data: products = [],
@@ -37,9 +39,8 @@ export const useProducts = () => {
     queryFn: getProducts,
   });
 
-  // — Liste dérivée
   const items = products
-    .filter((p) => (tab === 'active' ? p.isActive : !p.isActive))
+    .filter((p) => (productState === 'active' ? p.isActive : !p.isActive))
     .filter(
       (p) =>
         p.name.toLowerCase().includes(q.toLowerCase()) ||
@@ -47,17 +48,18 @@ export const useProducts = () => {
     )
     .filter((p) => (selectedCategory ? p.categoryId === selectedCategory : true));
 
-  // — Stats
   const stats = {
     active: products.filter((p) => p.isActive).length,
-    avg: products.length > 0 ? products.reduce((sum, p) => sum + p.price, 0) / products.length : 0,
+    avgPrice:
+      products.length > 0 ? products.reduce((sum, p) => sum + p.price, 0) / products.length : 0,
     expensive: products.filter((p) => p.price > 10).length,
   };
 
-  // — Mutations
-  const toggleActive = useMutation({
+  const useToggleActiveMutation = useMutation({
     mutationFn: (product: Product) => updateProduct(product.id, { isActive: !product.isActive }),
     onSuccess: (updated) => {
+      // Si les query params avec été en params, j'aurais plutot invalidate le call avec la query key ['products', { q, productState, selectedCategory }]
+      // pour etre sur que les data soient iso avec le serveur
       queryClient.setQueryData<Product[]>(['products'], (prev = []) =>
         prev.map((p) => (p.id === updated.id ? updated : p))
       );
@@ -65,7 +67,7 @@ export const useProducts = () => {
     },
   });
 
-  const savePrice = useMutation({
+  const useSavePriceMutation = useMutation({
     mutationFn: ({ id, price }: { id: number; price: number }) => updateProduct(id, { price }),
     onSuccess: (updated) => {
       queryClient.setQueryData<Product[]>(['products'], (prev = []) =>
@@ -74,7 +76,7 @@ export const useProducts = () => {
     },
   });
 
-  const bulk = useMutation({
+  const useBulkMutation = useMutation({
     mutationFn: async (activate: boolean) => {
       const targets = selectedKeys.filter((id) => {
         const product = products.find((p) => p.id === id);
@@ -95,25 +97,21 @@ export const useProducts = () => {
   });
 
   return {
-    // Liste & état
     items,
     products,
-    isLoading,
+    loading: isLoading,
     error,
     stats,
-    // Filtres
     q,
     setSearchTerm,
     selectedCategory,
     setSelectedCategory,
-    tab,
-    setTab,
-    // Selection
+    productState,
+    setProductState,
     selectedKeys,
     setSelectedKeys,
-    // Mutations
-    toggleActive,
-    savePrice,
-    bulk,
+    useToggleActiveMutation,
+    useSavePriceMutation,
+    useBulkMutation,
   };
 };
