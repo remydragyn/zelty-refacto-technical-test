@@ -12,7 +12,6 @@ import {
   Tabs,
   Tag,
   Typography,
-  message,
 } from 'antd';
 import type { TableColumnsType } from 'antd';
 import { useState } from 'react';
