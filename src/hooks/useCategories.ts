@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { API_ROUTES } from '../helpers/api';
 import { Category } from '../types';
 import { useQuery } from '@tanstack/react-query';
@@ -8,8 +7,8 @@ interface UseCategoriesReturn {
   categories: Category[];
   loading: boolean;
   error: string | null;
-  getCatName: (categoryId: number) => string;
-  getCatColor: (categoryId: number) => string;
+  getCategorieName: (categoryId: number) => string;
+  getCategorieColor: (categoryId: number) => string;
 }
 
 // Move to commun api call file
@@ -21,8 +20,7 @@ const getCategories = async (): Promise<Category[]> => {
   return data;
 };
 
-export const useCategories = () => {
-  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+export const useCategories = (): UseCategoriesReturn => {
   const {
     data: categories = [],
     isLoading,
@@ -45,9 +43,7 @@ export const useCategories = () => {
     categories,
     getCategorieName,
     getCategorieColor,
-    selectedCategory,
-    setSelectedCategory,
-    isLoading,
+    loading: isLoading,
     error: error instanceof Error ? error.message : null,
   };
 };
