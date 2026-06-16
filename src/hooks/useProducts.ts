@@ -60,6 +60,9 @@ export const useProducts = () => {
     expensive: products.filter((p) => p.price > 10).length,
   };
 
+  // Modification global des mutation.
+  // Je n'ai pas assez la main sur la gestion des erreurs et success pour le moment.
+
   const useToggleActiveMutation = useMutation({
     mutationFn: (product: Product) => updateProduct(product.id, { isActive: !product.isActive }),
     onSuccess: (updated) => {

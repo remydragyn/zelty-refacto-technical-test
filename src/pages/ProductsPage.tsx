@@ -73,6 +73,8 @@ export default function ProductsPage() {
       return;
     }
     useSavePriceMutation.mutate({ id: editingId, price });
+    // Probleme si erreur de la mutation. l'Id ne sera pas reset.
+    // Sera reglé avec le rework de la gestion de mutations
     setEditingId(null);
   };
 
