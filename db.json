@@ -4,7 +4,7 @@
       "id": 1,
       "name": "Burger Classic",
       "description": "Steak haché, salade, tomate, cornichons",
-      "price": 12.6,
+      "price": 150.6,
       "categoryId": 1,
       "isActive": true
     },
@@ -30,7 +30,7 @@
       "description": "Frites fraîches coupées à la main, sel de Guérande",
       "price": 4.5,
       "categoryId": 2,
-      "isActive": true
+      "isActive": false
     },
     {
       "id": 5,
@@ -46,7 +46,7 @@
       "description": "Romaine, parmesan, croûtons, sauce Caesar maison",
       "price": 8.9,
       "categoryId": 2,
-      "isActive": false
+      "isActive": true
     },
     {
       "id": 7,
@@ -54,7 +54,7 @@
       "description": "Lait entier, glace vanille, chantilly",
       "price": 6.5,
       "categoryId": 3,
-      "isActive": false
+      "isActive": true
     },
     {
       "id": 8,
@@ -62,7 +62,7 @@
       "description": "33cl, servi avec glaçons",
       "price": 3,
       "categoryId": 3,
-      "isActive": true
+      "isActive": false
     },
     {
       "id": 9,

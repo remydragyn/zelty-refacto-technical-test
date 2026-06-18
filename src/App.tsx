@@ -2,7 +2,7 @@ import { Grid, Layout } from 'antd';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import zeltyLogo from '../logo.svg';
 import ProductDetailPage from './pages/ProductDetailPage';
-import ProductsPage from './pages/ProductsPage';
+import ProductsListingPage from './pages/ProductsList/ProductsListingPage';
 
 const { Header, Content } = Layout;
 const { useBreakpoint } = Grid;
@@ -21,7 +21,7 @@ export default function App() {
           <div style={{ background: 'white', borderRadius: sm ? 8 : 0, padding: sm ? 24 : 16 }}>
             <Routes>
               <Route path="/" element={<Navigate to="/products" replace />} />
-              <Route path="/products" element={<ProductsPage />} />
+              <Route path="/products" element={<ProductsListingPage />} />
               <Route path="/products/:id" element={<ProductDetailPage />} />
             </Routes>
           </div>
