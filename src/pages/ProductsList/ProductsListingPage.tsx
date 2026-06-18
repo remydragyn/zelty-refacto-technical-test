@@ -1,14 +1,14 @@
 import { Flex, Grid } from 'antd';
 import { exportProductsCsv } from '@src/helpers/export';
 import { useCategories } from '@src/hooks/useCategories';
-import { useProductsFilters } from '@src/hooks/useProductsFilters';
-import { useProductsTable } from '@src/hooks/useProductsTable';
-import { useProductsPriceEdit } from '@src/hooks/useProductEditPrice';
-import { useProductsBulk } from '@src/hooks/useProductsBulk';
+import { useProductsFilters } from '@src/pages/ProductsList/hooks/useProductsFilters';
+import { useProductsTable } from '@src/pages/ProductsList/hooks/useProductsTable';
+import { useProductsPriceEdit } from '@src/pages/ProductsList/hooks/useProductEditPrice';
+import { useProductsBulk } from '@src/pages/ProductsList/hooks/useProductsBulk';
 import { ProductsListHeader } from './components/ProductsListHeader/ProductsListHeader';
 import { ProductsListSearch } from './components/ProductsListSearch/ProductsListSearch';
 import { ProductsListStats } from './components/ProductListStats/ProductListStats';
-import { ProductsListTable } from './components/ProductsListingPage/ProductsListTable';
+import { ProductsListTable } from './components/ProductsListTable/ProductsListTable';
 import { ProductsListBulkActionBar } from './components/ProductsListBulkActionBar/ProductsListBulkActionBar';
 
 const { useBreakpoint } = Grid;

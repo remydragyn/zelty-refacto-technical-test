@@ -1,6 +1,6 @@
 import { useMutation, UseMutationResult, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Product } from '@src/types';
-import { ProductFilters } from '@src/hooks/useProductsFilters';
+import { ProductFilters } from '@src/pages/ProductsList/hooks/useProductsFilters';
 import { getProducts, updateProduct } from '@src/helpers/api';
 
 export interface UseProductsTableReturn {

@@ -1,4 +1,4 @@
-import { UseProductsBulkReturn } from '@src/hooks/useProductsBulk';
+import { UseProductsBulkReturn } from '@src/pages/ProductsList/hooks/useProductsBulk';
 import { Product } from '@src/types';
 import { Affix, Button, Card, Space, Typography } from 'antd';
 import { message } from 'antd';

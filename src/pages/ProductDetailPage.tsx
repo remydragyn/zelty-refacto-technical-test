@@ -1,4 +1,17 @@
-import { Button, Col, Descriptions, Flex, Form, Input, InputNumber, Row, Space, Spin, Tag, Typography } from 'antd';
+import {
+  Button,
+  Col,
+  Descriptions,
+  Flex,
+  Form,
+  Input,
+  InputNumber,
+  Row,
+  Space,
+  Spin,
+  Tag,
+  Typography,
+} from 'antd';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Category, Product } from '../types';
@@ -78,7 +91,11 @@ export default function ProductDetailPage() {
 
   if (loading) return <Spin style={{ display: 'block', padding: 48, textAlign: 'center' }} />;
   if (error || !product)
-    return <div style={{ padding: 48, textAlign: 'center', color: '#dc2626' }}>{error ?? 'Produit introuvable.'}</div>;
+    return (
+      <div style={{ padding: 48, textAlign: 'center', color: '#dc2626' }}>
+        {error ?? 'Produit introuvable.'}
+      </div>
+    );
 
   return (
     <div>
@@ -97,13 +114,17 @@ export default function ProductDetailPage() {
           <Row style={{ marginBottom: 20 }}>
             <Col xs={24} md={18} lg={12}>
               <Descriptions bordered column={1}>
-            <Descriptions.Item label="Catégorie">{getCatName(product.categoryId)}</Descriptions.Item>
-            <Descriptions.Item label="Description">{product.description}</Descriptions.Item>
-            <Descriptions.Item label="Prix">
-              <span style={{ color: product.price > 10 ? '#059669' : undefined, fontWeight: 500 }}>
-                {fmtPrice(product.price)}
-              </span>
-            </Descriptions.Item>
+                <Descriptions.Item label="Catégorie">
+                  {getCatName(product.categoryId)}
+                </Descriptions.Item>
+                <Descriptions.Item label="Description">{product.description}</Descriptions.Item>
+                <Descriptions.Item label="Prix">
+                  <span
+                    style={{ color: product.price > 10 ? '#059669' : undefined, fontWeight: 500 }}
+                  >
+                    {fmtPrice(product.price)}
+                  </span>
+                </Descriptions.Item>
               </Descriptions>
             </Col>
           </Row>
@@ -119,33 +140,41 @@ export default function ProductDetailPage() {
       ) : (
         <Row>
           <Col xs={24} md={18} lg={12}>
-        <Form
-          layout="vertical"
-          initialValues={{ name: product.name, description: product.description, price: product.price }}
-          onFinish={handleSave}
-        >
-          <Form.Item name="name" label="Nom" rules={[{ required: true, message: 'Le nom est requis.' }]}>
-            <Input />
-          </Form.Item>
-          <Form.Item name="description" label="Description">
-            <Input.TextArea rows={3} />
-          </Form.Item>
-          <Form.Item
-            name="price"
-            label="Prix"
-            rules={[{ required: true, type: 'number', min: 0, message: 'Prix invalide.' }]}
-          >
-            <InputNumber min={0} step={0.01} style={{ width: 140 }} />
-          </Form.Item>
-          <Form.Item>
-            <Space>
-              <Button type="primary" htmlType="submit" loading={busy}>
-                Enregistrer
-              </Button>
-              <Button onClick={() => setIsEditing(false)}>Annuler</Button>
-            </Space>
-          </Form.Item>
-        </Form>
+            <Form
+              layout="vertical"
+              initialValues={{
+                name: product.name,
+                description: product.description,
+                price: product.price,
+              }}
+              onFinish={handleSave}
+            >
+              <Form.Item
+                name="name"
+                label="Nom"
+                rules={[{ required: true, message: 'Le nom est requis.' }]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item name="description" label="Description">
+                <Input.TextArea rows={3} />
+              </Form.Item>
+              <Form.Item
+                name="price"
+                label="Prix"
+                rules={[{ required: true, type: 'number', min: 0, message: 'Prix invalide.' }]}
+              >
+                <InputNumber min={0} step={0.01} style={{ width: 140 }} />
+              </Form.Item>
+              <Form.Item>
+                <Space>
+                  <Button type="primary" htmlType="submit" loading={busy}>
+                    Enregistrer
+                  </Button>
+                  <Button onClick={() => setIsEditing(false)}>Annuler</Button>
+                </Space>
+              </Form.Item>
+            </Form>
           </Col>
         </Row>
       )}

@@ -4,11 +4,11 @@ import { message } from 'antd';
 import { Link } from 'react-router-dom';
 import { Product } from '@src/types';
 import { formatPrice } from '@src/helpers/format';
-import { UseProductsTableReturn } from '@src/hooks/useProductsTable';
-import { UseProductsPriceEditReturn } from '@src/hooks/useProductEditPrice';
-import { UseProductsBulkReturn } from '@src/hooks/useProductsBulk';
+import { UseProductsTableReturn } from '@src/pages/ProductsList/hooks/useProductsTable';
+import { UseProductsPriceEditReturn } from '@src/pages/ProductsList/hooks/useProductEditPrice';
+import { UseProductsBulkReturn } from '@src/pages/ProductsList/hooks/useProductsBulk';
 import { UseCategoriesReturn } from '@src/hooks/useCategories';
-import { UseProductsFiltersReturn } from '@src/hooks/useProductsFilters';
+import { UseProductsFiltersReturn } from '@src/pages/ProductsList/hooks/useProductsFilters';
 
 interface ProductsListTableProps {
   filtersVM: UseProductsFiltersReturn;
