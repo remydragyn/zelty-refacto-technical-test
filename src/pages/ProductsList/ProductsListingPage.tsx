@@ -20,6 +20,8 @@ export default function ProductsListingPage() {
   const screens = useBreakpoint();
   const isMobile = !screens.sm;
 
+  // Pas fan de la nomenclature "VM" mais je n'ai pas mieux a proposer pour le moment.
+  // Je pense qu'il y a mieux a faire pour ProductListTable que de lui passer 5 VM mais c'est qu'une intuition.
   const categoriesVM = useCategories();
   const filtersVM = useProductsFilters();
   const tableVM = useProductsTable(filtersVM.filters);
