@@ -10,6 +10,7 @@ import { UseProductsBulkReturn } from '@src/pages/ProductsList/hooks/useProducts
 import { UseCategoriesReturn } from '@src/hooks/useCategories';
 import { UseProductsFiltersReturn } from '@src/pages/ProductsList/hooks/useProductsFilters';
 import { EXPENSIVE_THRESHOLD } from '@src/helpers/constant';
+import { ROUTES } from '@src/helpers/routes';
 
 interface ProductsListTableProps {
   filtersVM: UseProductsFiltersReturn;
@@ -30,7 +31,7 @@ export const ProductsListTable = ({
     {
       title: 'Nom',
       dataIndex: 'name',
-      render: (name: string, record: Product) => <Link to={`/products/${record.id}`}>{name}</Link>,
+      render: (name: string, record: Product) => <Link to={ROUTES.product(record.id)}>{name}</Link>,
     },
     {
       title: 'Catégorie',
@@ -64,7 +65,7 @@ export const ProductsListTable = ({
             <Button
               size="small"
               type="primary"
-              loading={priceEditVM.isPending}
+              loading={priceEditVM.pending}
               onClick={async () => {
                 try {
                   await priceEditVM.savePrice();

@@ -1,4 +1,4 @@
-import { Flex, Grid, Input, Select } from 'antd';
+import { Flex, Input, Select } from 'antd';
 import { Category } from '@src/types';
 import { UseProductsFiltersReturn } from '@src/pages/ProductsList/hooks/useProductsFilters';
 

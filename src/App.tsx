@@ -1,7 +1,7 @@
 import { Grid, Layout } from 'antd';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import zeltyLogo from '../logo.svg';
-import ProductDetailPage from './pages/ProductDetailPage';
+import ProductDetailPage from './pages/ProductDetail/ProductDetailPage';
 import ProductsListingPage from './pages/ProductsList/ProductsListingPage';
 
 const { Header, Content } = Layout;

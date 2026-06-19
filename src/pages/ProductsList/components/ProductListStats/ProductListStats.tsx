@@ -1,4 +1,4 @@
-import { Flex, Grid, Statistic } from 'antd';
+import { Flex, Statistic } from 'antd';
 import { formatPrice } from '@src/helpers/format';
 
 interface ProductsListStatsProps {

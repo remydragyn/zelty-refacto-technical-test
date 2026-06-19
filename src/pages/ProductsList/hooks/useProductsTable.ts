@@ -3,6 +3,7 @@ import { Product } from '@src/types';
 import { getProducts, updateProduct } from '@src/helpers/api';
 import { ProductFilters } from './useProductsFilters';
 import { EXPENSIVE_THRESHOLD } from '@src/helpers/constant';
+import { syncProductInCache } from '@src/helpers/queryCache';
 
 export interface UseProductsTableReturn {
   items: Product[];
@@ -50,9 +51,7 @@ export const useProductsTable = (filters: ProductFilters): UseProductsTableRetur
   const toggleActiveMutation = useMutation({
     mutationFn: (product: Product) => updateProduct(product.id, { isActive: !product.isActive }),
     onSuccess: (updated) => {
-      queryClient.setQueryData<Product[]>(['products'], (prev = []) =>
-        prev.map((p) => (p.id === updated.id ? updated : p))
-      );
+      syncProductInCache(queryClient, updated);
     },
   });
 

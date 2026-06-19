@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useMutation, UseMutationResult, useQueryClient } from '@tanstack/react-query';
 import { Product } from '@src/types';
 import { updateProduct } from '@src/helpers/api';
+import { syncProductInCache } from '@src/helpers/queryCache';
 
 export interface UseProductsBulkReturn {
   selectedKeys: number[];
@@ -23,12 +24,7 @@ export const useProductsBulk = (items: Product[]) => {
       return Promise.all(targets.map((id) => updateProduct(id, { isActive: activate })));
     },
     onSuccess: (updated) => {
-      queryClient.setQueryData<Product[]>(['products'], (prev = []) =>
-        prev.map((p) => {
-          const match = updated.find((u) => u.id === p.id);
-          return match ?? p;
-        })
-      );
+      syncProductInCache(queryClient, updated);
       setSelectedKeys([]);
     },
   });

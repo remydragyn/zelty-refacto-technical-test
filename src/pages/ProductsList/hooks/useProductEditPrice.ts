@@ -10,7 +10,7 @@ export interface UseProductsPriceEditReturn {
   openEditPrice: (product: Product) => void;
   cancelEditPrice: () => void;
   savePrice: () => Promise<void>;
-  isPending: boolean;
+  pending: boolean;
 }
 
 export const useProductsPriceEdit = () => {
@@ -58,6 +58,6 @@ export const useProductsPriceEdit = () => {
     openEditPrice,
     cancelEditPrice,
     savePrice,
-    isPending: savePriceMutation.isPending,
+    pending: savePriceMutation.isPending,
   };
 };
