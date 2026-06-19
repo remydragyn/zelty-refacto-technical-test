@@ -1,13 +1,13 @@
 import { useMutation, UseMutationResult, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Product } from '@src/types';
-import { ProductFilters } from '@src/pages/ProductsList/hooks/useProductsFilters';
 import { getProducts, updateProduct } from '@src/helpers/api';
+import { ProductFilters } from './useProductsFilters';
+import { EXPENSIVE_THRESHOLD } from '@src/helpers/constant';
 
 export interface UseProductsTableReturn {
   items: Product[];
-  products: Product[];
-  isLoading: boolean;
-  error: unknown;
+  loading: boolean;
+  error: Error | null;
   stats: {
     active: number;
     avgPrice: number;
@@ -16,12 +16,12 @@ export interface UseProductsTableReturn {
   toggleActiveMutation: UseMutationResult<Product, Error, Product, unknown>;
 }
 
-export const useProductsTable = (filters: ProductFilters) => {
+export const useProductsTable = (filters: ProductFilters): UseProductsTableReturn => {
   const queryClient = useQueryClient();
 
   const {
     data: products = [],
-    isLoading,
+    isLoading: loading,
     error,
   } = useQuery({
     queryKey: ['products'],
@@ -43,7 +43,7 @@ export const useProductsTable = (filters: ProductFilters) => {
     active: products.filter((p) => p.isActive).length,
     avgPrice:
       products.length > 0 ? products.reduce((sum, p) => sum + p.price, 0) / products.length : 0,
-    expensive: products.filter((p) => p.price > 10).length,
+    expensive: products.filter((p) => p.price > EXPENSIVE_THRESHOLD).length,
   };
 
   // — Mutations
@@ -58,8 +58,7 @@ export const useProductsTable = (filters: ProductFilters) => {
 
   return {
     items,
-    products,
-    isLoading,
+    loading,
     error,
     stats,
     toggleActiveMutation,

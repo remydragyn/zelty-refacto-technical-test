@@ -23,7 +23,8 @@ export const exportProductsCsv = (
   const a = document.createElement('a');
   a.href = url;
   a.download = 'catalogue-produits-remy.csv';
+  document.body.appendChild(a);
   a.click();
-  // Pourquoi on a besoin de le revoke ?
+  document.body.removeChild(a);
   URL.revokeObjectURL(url);
 };

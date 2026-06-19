@@ -19,6 +19,7 @@ export const useProductsBulk = (items: Product[]) => {
         const product = items.find((p) => p.id === id);
         return product && product.isActive !== activate;
       });
+      if (targets.length === 0) return [];
       return Promise.all(targets.map((id) => updateProduct(id, { isActive: activate })));
     },
     onSuccess: (updated) => {

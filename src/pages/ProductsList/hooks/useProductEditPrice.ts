@@ -43,6 +43,7 @@ export const useProductsPriceEdit = () => {
   };
 
   const savePrice = async (): Promise<void> => {
+    if (editingId === null) return;
     const price = parseFloat(editPrice);
     if (isNaN(price) || price < 0) {
       throw new Error('Le prix doit être un nombre positif.');

@@ -11,3 +11,4 @@ export const CAT_COLORS = [
   'magenta',
   'gold',
 ];
+export const EXPENSIVE_THRESHOLD = 10;

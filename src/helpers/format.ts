@@ -1,4 +1,3 @@
-// Langue + curreny en props + default value pour futur currencies
-export const formatPrice = (price: number) => {
-  return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(price);
+export const formatPrice = (price: number, locale = 'fr-FR', currency = 'EUR') => {
+  return new Intl.NumberFormat(locale, { style: 'currency', currency }).format(price);
 };

@@ -28,10 +28,17 @@ export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const [product, setProduct] = useState<Product | null>(null);
-  const [categories, setCategories] = useState<Category[]>([]);
+  // useProduct hook, id en params
+  // return { product, loading, error }
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [product, setProduct] = useState<Product | null>(null);
+
+  // useCategories hook
+  const [categories, setCategories] = useState<Category[]>([]);
+  const getCatName = (categoryId: number) =>
+    categories.find((c) => c.id === categoryId)?.name ?? '—';
+
   const [edit, setIsEditing] = useState(false);
   const [busy, setSaving] = useState(false);
 
@@ -85,9 +92,6 @@ export default function ProductDetailPage() {
 
   const fmtPrice = (price: number) =>
     new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(price);
-
-  const getCatName = (categoryId: number) =>
-    categories.find((c) => c.id === categoryId)?.name ?? '—';
 
   if (loading) return <Spin style={{ display: 'block', padding: 48, textAlign: 'center' }} />;
   if (error || !product)

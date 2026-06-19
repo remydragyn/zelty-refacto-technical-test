@@ -2,17 +2,17 @@ import { Flex, Grid, Input, Select } from 'antd';
 import { Category } from '@src/types';
 import { UseProductsFiltersReturn } from '@src/pages/ProductsList/hooks/useProductsFilters';
 
-const { useBreakpoint } = Grid;
-
 interface ProductsListSearchProps {
   filtersVM: UseProductsFiltersReturn;
   categories: Category[];
+  isMobile?: boolean;
 }
 
-export const ProductsListSearch = ({ filtersVM, categories }: ProductsListSearchProps) => {
-  const screens = useBreakpoint();
-  const isMobile = !screens.sm;
-
+export const ProductsListSearch = ({
+  filtersVM,
+  categories,
+  isMobile,
+}: ProductsListSearchProps) => {
   return (
     <Flex gap={8} wrap="wrap" align="center" style={{ marginBottom: 16 }}>
       <Input

@@ -9,6 +9,7 @@ import { UseProductsPriceEditReturn } from '@src/pages/ProductsList/hooks/usePro
 import { UseProductsBulkReturn } from '@src/pages/ProductsList/hooks/useProductsBulk';
 import { UseCategoriesReturn } from '@src/hooks/useCategories';
 import { UseProductsFiltersReturn } from '@src/pages/ProductsList/hooks/useProductsFilters';
+import { EXPENSIVE_THRESHOLD } from '@src/helpers/constant';
 
 interface ProductsListTableProps {
   filtersVM: UseProductsFiltersReturn;
@@ -84,7 +85,7 @@ export const ProductsListTable = ({
           <span
             style={{
               cursor: 'pointer',
-              color: price > 10 ? '#059669' : undefined,
+              color: price > EXPENSIVE_THRESHOLD ? '#059669' : undefined,
               fontWeight: 500,
             }}
             onClick={() => priceEditVM.openEditPrice(record)}
@@ -96,7 +97,7 @@ export const ProductsListTable = ({
     },
     {
       title: 'Actions',
-      fixed: 'right' as const,
+      fixed: 'right',
       width: 120,
       render: (_: unknown, record: Product) => (
         <Button
@@ -131,7 +132,7 @@ export const ProductsListTable = ({
         dataSource={tableVM.items}
         columns={columns}
         rowKey="id"
-        loading={tableVM.isLoading}
+        loading={tableVM.loading}
         pagination={false}
         scroll={{ x: 'max-content' }}
         rowClassName={(record) => (record.isActive ? '' : 'inactive-row')}

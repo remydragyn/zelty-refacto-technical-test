@@ -1,7 +1,10 @@
 import { Flex, Grid } from 'antd';
 import { exportProductsCsv } from '@src/helpers/export';
 import { useCategories } from '@src/hooks/useCategories';
-import { useProductsFilters } from '@src/pages/ProductsList/hooks/useProductsFilters';
+import {
+  ProductFilters,
+  useProductsFilters,
+} from '@src/pages/ProductsList/hooks/useProductsFilters';
 import { useProductsTable } from '@src/pages/ProductsList/hooks/useProductsTable';
 import { useProductsPriceEdit } from '@src/pages/ProductsList/hooks/useProductEditPrice';
 import { useProductsBulk } from '@src/pages/ProductsList/hooks/useProductsBulk';
@@ -17,11 +20,11 @@ export default function ProductsListingPage() {
   const screens = useBreakpoint();
   const isMobile = !screens.sm;
 
+  const categoriesVM = useCategories();
   const filtersVM = useProductsFilters();
   const tableVM = useProductsTable(filtersVM.filters);
   const priceEditVM = useProductsPriceEdit();
   const bulkVM = useProductsBulk(tableVM.items);
-  const categoriesVM = useCategories();
 
   if (tableVM.error)
     return (
@@ -36,7 +39,11 @@ export default function ProductsListingPage() {
         onExport={() => exportProductsCsv(tableVM.items, categoriesVM.getCatName)}
       />
       <Flex gap={8} wrap="wrap" align="center" justify="space-between" style={{ marginBottom: 16 }}>
-        <ProductsListSearch filtersVM={filtersVM} categories={categoriesVM.categories} />
+        <ProductsListSearch
+          filtersVM={filtersVM}
+          categories={categoriesVM.categories}
+          isMobile={isMobile}
+        />
         <ProductsListStats stats={tableVM.stats} isMobile={isMobile} />
       </Flex>
       <ProductsListTable

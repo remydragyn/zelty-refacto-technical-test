@@ -3,21 +3,20 @@ import { getCategories } from '@src/helpers/api';
 import { CAT_COLORS } from '@src/helpers/constant';
 import { Category } from '@src/types';
 
-// Ne pas faire ca permet d'etre certain du return.
+// A voir la maniere de gerer l'interface de return.
 // export type UseCategoriesReturn = ReturnType<typeof useCategories>;
-
 export interface UseCategoriesReturn {
   categories: Category[];
-  isLoading: boolean;
+  loading: boolean;
   error: unknown;
   getCatName: (categoryId: number) => string;
   getCatColor: (categoryId: number) => string;
 }
 
-export const useCategories = () => {
+export const useCategories = (): UseCategoriesReturn => {
   const {
     data: categories = [],
-    isLoading,
+    isLoading: loading,
     error,
   } = useQuery({
     queryKey: ['categories'],
@@ -29,5 +28,5 @@ export const useCategories = () => {
 
   const getCatColor = (categoryId: number): string => CAT_COLORS[categoryId % CAT_COLORS.length];
 
-  return { categories, isLoading, error, getCatName, getCatColor };
+  return { categories, loading, error, getCatName, getCatColor };
 };

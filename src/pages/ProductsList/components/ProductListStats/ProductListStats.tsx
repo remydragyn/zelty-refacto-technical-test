@@ -1,9 +1,7 @@
 import { Flex, Grid, Statistic } from 'antd';
 import { formatPrice } from '@src/helpers/format';
 
-const { useBreakpoint } = Grid;
-
-interface ProductsStatsProps {
+interface ProductsListStatsProps {
   stats: {
     active: number;
     avgPrice: number;
@@ -12,7 +10,7 @@ interface ProductsStatsProps {
   isMobile: boolean;
 }
 
-export const ProductsListStats = ({ stats, isMobile }: ProductsStatsProps) => {
+export const ProductsListStats = ({ stats, isMobile }: ProductsListStatsProps) => {
   return (
     <Flex gap={24} wrap="wrap" align="center" style={isMobile ? { marginTop: 16 } : undefined}>
       <Statistic title="Actifs" value={stats.active} />
